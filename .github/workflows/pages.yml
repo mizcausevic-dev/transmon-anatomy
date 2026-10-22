@@ -1,0 +1,120 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else npm install; fi
+      - run: npm test
+      - run: npm run build
+      - name: Publish dist on the pages branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          site="${RUNNER_TEMP}/site"
+          work="${RUNNER_TEMP}/pages-repo"
+          rm -rf "$site" "$work"
+          mkdir -p "$site"
+          cp -a dist/. "$site/"
+          rm -f "$site"/assets/*.map
+          sed -i '/sourceMappingURL/d' "$site"/assets/*.js
+          touch "$site/.nojekyll"
+          remote="https://github.com/${GITHUB_REPOSITORY}.git"
+          askpass="${RUNNER_TEMP}/git-askpass.sh"
+          printf '#!/bin/sh\ncase "$1" in\n  *Username*) echo "x-access-token" ;;\n  *) echo "$GH_TOKEN" ;;\nesac\n' > "$askpass"
+          chmod 700 "$askpass"
+          export GIT_ASKPASS="$askpass"
+          export GIT_TERMINAL_PROMPT=0
+          if git ls-remote --heads "$remote" pages | grep -q 'refs/heads/pages'; then
+            git clone --depth 1 --branch pages "$remote" "$work"
+          else
+            mkdir -p "$work"
+            git -C "$work" init -b pages
+          fi
+          find "$work" -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp -a "$site/." "$work/"
+          git -C "$work" add -A
+          if git -C "$work" diff --cached --quiet; then
+            echo "pages branch already matches this build"
+            exit 0
+          fi
+          git -C "$work" -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "Publish the static explainer."
+          git -C "$work" push "$remote" HEAD:pages
+      - name: Set repository topics
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api --method PUT "repos/${GITHUB_REPOSITORY}/topics" \
+            --input - <<'EOF'
+{"names":["quantum-computing","transmon","superconducting-qubit","threejs","visualization","typescript","scientific-visualization","webgl","education"]}
+EOF
+      - name: Serve Pages from the pages branch
+        id: branch_source
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          if gh api "repos/${GITHUB_REPOSITORY}/pages" >/dev/null 2>&1; then
+            gh api --method PUT "repos/${GITHUB_REPOSITORY}/pages" \
+              -f build_type=legacy \
+              -f "source[branch]=pages" \
+              -f "source[path]=/"
+          else
+            gh api --method POST "repos/${GITHUB_REPOSITORY}/pages" \
+              -f build_type=legacy \
+              -f "source[branch]=pages" \
+              -f "source[path]=/"
+          fi
+      - name: Upload Pages artifact
+        if: steps.branch_source.outcome != 'success'
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
+        with:
+          path: dist
+  deploy:
+    needs: build
+    if: needs.build.result == 'success'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Skip Actions deploy when the pages branch is the source
+        id: gate
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set +e
+          src=$(gh api "repos/${GITHUB_REPOSITORY}/pages" --jq '.source.branch' 2>/dev/null)
+          echo "source_branch=${src}" >> "$GITHUB_OUTPUT"
+          if [ "$src" = "pages" ]; then
+            echo "use_actions=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "use_actions=true" >> "$GITHUB_OUTPUT"
+          fi
+      - id: deployment
+        if: steps.gate.outputs.use_actions == 'true'
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5
