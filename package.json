@@ -1,0 +1,23 @@
+{
+  "name": "transmon-anatomy",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "node_modules/.bin/esbuild scripts/validate.ts --bundle --platform=node --format=esm --outfile=/tmp/transmon-validate.mjs && node /tmp/transmon-validate.mjs"
+  },
+  "dependencies": {
+    "three": "^0.170.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.170.0",
+    "typescript": "^5.6.3",
+    "vite": "^6.0.0"
+  }
+}
