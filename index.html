@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="A 34-second scientific schematic of a fixed-frequency transmon: junction, idealized π/2 control, and one synthetic integrated readout record."
+    />
+    <title>Transmon anatomy</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect fill='%23090E17' width='16' height='16'/%3E%3Crect fill='%2324344B' x='2' y='3' width='12' height='10'/%3E%3Crect fill='%23A7B3C2' x='3' y='5' width='4' height='6'/%3E%3Crect fill='%23A7B3C2' x='9' y='5' width='4' height='6'/%3E%3Crect fill='%236B5E54' x='7' y='7' width='2' height='2'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./src/style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <div>
+          <p class="eyebrow">Fixed-frequency transmon</p>
+          <h1>Cold-stage anatomy</h1>
+        </div>
+        <p id="evidence">Scientific schematic with idealized control and synthetic readout.</p>
+      </header>
+      <div id="workspace">
+        <div id="stage">
+          <canvas id="view" aria-label="Three-dimensional schematic of a packaged transmon. Explanations are in the diagram panel."></canvas>
+          <div id="callouts"></div>
+          <div id="fallback"></div>
+          <div id="gate">
+            <button id="start" type="button">Play the 34-second explainer</button>
+            <p>Audio starts with this click. Playback is timed from a master clock, not from the render rate.</p>
+          </div>
+          <p id="status" role="status"></p>
+        </div>
+        <aside id="diagrams" aria-label="Diagrams and captions"></aside>
+      </div>
+      <footer id="transport">
+        <div class="transport-row">
+          <button id="play" type="button" aria-pressed="false">Play</button>
+          <button id="replay" type="button">Replay</button>
+          <label class="time-label" for="timeline">Timeline</label>
+          <input id="timeline" type="range" min="0" max="34" step="0.001" value="0" />
+          <span id="clock" aria-hidden="true">00:00.000 / 00:34.000</span>
+          <span id="frame" aria-hidden="true">frame 0</span>
+        </div>
+        <div class="transport-row">
+          <div class="shots" role="group" aria-label="Shots">
+            <button type="button" data-shot="0">1 Cold stage</button>
+            <button type="button" data-shot="5">2 Junction</button>
+            <button type="button" data-shot="10">3 Levels</button>
+            <button type="button" data-shot="17">4 Control</button>
+            <button type="button" data-shot="25">5 Readout</button>
+          </div>
+          <button id="mute" type="button" aria-pressed="false">Mute</button>
+          <label>Music <input id="music" type="range" min="0" max="1" step="0.01" value="0.7" /></label>
+          <label>Effects <input id="sfx" type="range" min="0" max="1" step="0.01" value="0.8" /></label>
+          <button id="motion" type="button" aria-pressed="false">Reduced motion</button>
+          <button id="full" type="button">Fullscreen</button>
+        </div>
+        <p class="audio-note">Original score and presentation sounds. Not microwave audio and not a quantum-state sonification. Keys: Space play, arrows seek, M mute, R replay, F fullscreen, 1–5 shots.</p>
+      </footer>
+      <div id="live" class="sr-only" aria-live="polite"></div>
+    </div>
+    <noscript>
+      <p>This explainer needs JavaScript to run the 34-second timeline. Nothing here is a measured device result.</p>
+    </noscript>
+    <script type="module" src="./src/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400" role="img" aria-labelledby="title desc">
+  <title id="title">Fixed-frequency transmon schematic</title>
+  <desc id="desc">Two capacitor pads share one Josephson junction. A drive line couples at the left. A readout resonator and feedline couple at the right and along the bottom. Gaps are capacitive. No flux line is drawn.</desc>
+  <rect width="720" height="400" fill="#090E17"/>
+  <rect x="48" y="56" width="624" height="288" rx="18" fill="#24344B"/>
+  <rect x="150" y="118" width="150" height="120" rx="16" fill="#A7B3C2"/>
+  <rect x="420" y="118" width="150" height="120" rx="16" fill="#A7B3C2"/>
+  <rect x="338" y="164" width="44" height="28" fill="#6B5E54"/>
+  <path d="M70 178 H150" stroke="#00E5FF" stroke-width="6" fill="none"/>
+  <path d="M570 178 H650" stroke="#FFD166" stroke-width="6" fill="none"/>
+  <path d="M600 178 V250 H430 V292" stroke="#FFD166" stroke-width="6" fill="none"/>
+  <path d="M300 292 H430" stroke="#FFD166" stroke-width="6" fill="none"/>
+  <path d="M300 292 V250 H210 V210" stroke="#FFD166" stroke-width="6" fill="none"/>
+  <text x="186" y="108" fill="#A7B3C2" font-family="Georgia, serif" font-size="16">pad</text>
+  <text x="456" y="108" fill="#A7B3C2" font-family="Georgia, serif" font-size="16">pad</text>
+  <text x="318" y="154" fill="#A7B3C2" font-family="Georgia, serif" font-size="14">junction</text>
+  <text x="70" y="164" fill="#00E5FF" font-family="Georgia, serif" font-size="14">drive</text>
+  <text x="520" y="312" fill="#FFD166" font-family="Georgia, serif" font-size="14">resonator and feed</text>
+</svg>
