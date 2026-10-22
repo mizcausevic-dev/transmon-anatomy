@@ -22,7 +22,6 @@ jobs:
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22
-          cache: npm
       - name: Install
         run: |
           if [ -f package-lock.json ]; then npm ci; else npm install; fi
@@ -67,10 +66,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh api --method PUT "repos/${GITHUB_REPOSITORY}/topics" \
-            --input - <<'EOF'
-{"names":["quantum-computing","transmon","superconducting-qubit","threejs","visualization","typescript","scientific-visualization","webgl","education"]}
-EOF
+          gh api --method PUT "repos/${GITHUB_REPOSITORY}/topics" --input - <<'EOF'
+          {"names":["quantum-computing","transmon","superconducting-qubit","threejs","visualization","typescript","scientific-visualization","webgl","education"]}
+          EOF
       - name: Serve Pages from the pages branch
         id: branch_source
         continue-on-error: true
