@@ -57,11 +57,13 @@ Play, pause, replay, timeline, mute, music level, effects level, reduced motion,
 
 Source: https://github.com/mizcausevic-dev/transmon-anatomy
 
-The built site is published on the `pages` branch. The workflow in `.github/workflows/pages.yml` runs the tests, builds `dist/`, and updates that branch. Preview URL: https://mizcausevic-dev.github.io/transmon-anatomy/
+The built site is on the `pages` branch: `index.html` and `assets/` at the branch root, with sourcemaps removed. `.github/workflows/pages.yml` runs the tests, builds `dist/`, and updates that branch on every push to `main`.
+
+GitHub Pages is not serving the branch yet. In the repository settings, set Pages to deploy from the `pages` branch, folder `/`. The address after that setting is saved is https://mizcausevic-dev.github.io/transmon-anatomy/
 
 The Medium draft is `article/transmon-qubit.md`, with the figure `article/transmon-schematic.svg`.
 
-About line: “Cinematic schematic of a fixed-frequency transmon, with idealized control and one synthetic readout.” Topics: `quantum-computing`, `transmon`, `superconducting-qubit`, `threejs`, `visualization`, `typescript`, `scientific-visualization`, `webgl`, `education`.
+About line: “Cinematic schematic of a fixed-frequency transmon, with idealized control and one synthetic readout.” Topics, once the repository allows them: `quantum-computing`, `transmon`, `superconducting-qubit`, `threejs`, `visualization`, `typescript`, `scientific-visualization`, `webgl`, `education`.
 
 ## License
 
